@@ -104,7 +104,7 @@ six==1.16.0
 smmap==5.0.0
 sqlparse==0.4.2
 streamlit==1.21.0
-tensorboard==2.11.2
+tensorboard>=2.12,<2.13
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.1
 tensorflow==2.12.0
