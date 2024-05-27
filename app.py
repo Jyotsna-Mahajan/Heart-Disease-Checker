@@ -37,7 +37,8 @@ def heart_disease_prediction(age, sex, cp, trestbps, chol, fbs, restecg, thalach
     input_data_as_numpy_array = np.asarray(input_data)
     input_data_reshaped = input_data_as_numpy_array.reshape(1, -1)
     prediction = loaded_model.predict(input_data_reshaped)
-    return prediction[0]
+    prediction_proba = loaded_model.predict_proba(input_data_reshaped)
+    return prediction[0], prediction_proba
 
 # Creating the streamlit app
 st.title("Heart Disease Predictor")
@@ -58,11 +59,15 @@ thal = st.selectbox("Thalassemia", [0, 1, 2, 3])
 
 if st.button("Predict"):
     sex = 0 if sex == "Male" else 1
-    result = heart_disease_prediction(age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal)
+    result, prediction_proba = heart_disease_prediction(age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal)
+    
     if result == 0:
         bg_color = 'red'
         prediction_result = 'Positive'
     else:
         bg_color = 'green'
         prediction_result = 'Negative'
-st.markdown(f"<p style='background-color:{bg_color}; color:white; padding:10px;'>Prediction: {prediction_result}%</p>", unsafe_allow_html=True)
+    
+    confidence = prediction_proba[0][result] * 100
+
+    st.markdown(f"<p style='background-color:{bg_color}; color:white; padding:10px;'>Prediction: {prediction_result}<br>Confidence: {confidence:.2f}%</p>", unsafe_allow_html=True)
